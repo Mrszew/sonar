@@ -3,6 +3,7 @@ from app import app
 from app import db
 from app.models import Menu
 from app.utils import format_response, get_current_timestamp, validate_input
+from app.config import Config
 
 @app.route('/')
 def home():
@@ -69,4 +70,13 @@ def get_metrics():
         "response_time": "50ms",
         "requests_per_second": 10,
         "error_rate": "0.1%"
+    })
+
+@app.route('/config')
+def get_config():
+    """Configuration endpoint for SonarCloud integration"""
+    return jsonify({
+        "api_info": Config.get_api_info(),
+        "sonar_config": Config.get_sonar_config(),
+        "environment": app.config.get('ENV', 'development')
     })
