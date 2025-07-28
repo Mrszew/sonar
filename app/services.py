@@ -101,8 +101,22 @@ class SecurityService:
     @staticmethod
     def generate_password(length: int = 12) -> str:
         """Generate secure password"""
+        # Ensure at least one character from each category
+        password = []
+        password.append(secrets.choice(string.ascii_uppercase))  # At least one uppercase
+        password.append(secrets.choice(string.ascii_lowercase))  # At least one lowercase
+        password.append(secrets.choice(string.digits))           # At least one digit
+        password.append(secrets.choice("!@#$%^&*"))             # At least one special char
+        
+        # Fill the rest with random characters
         alphabet = string.ascii_letters + string.digits + "!@#$%^&*"
-        return ''.join(secrets.choice(alphabet) for _ in range(length))
+        for _ in range(length - 4):
+            password.append(secrets.choice(alphabet))
+        
+        # Shuffle the password
+        password_list = list(password)
+        secrets.SystemRandom().shuffle(password_list)
+        return ''.join(password_list)
     
     @staticmethod
     def hash_password(password: str) -> str:
