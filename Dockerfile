@@ -1,20 +1,30 @@
-FROM ubuntu:18.04
+FROM python:3.9-slim
 
+WORKDIR /app
+
+# Install system dependencies
 RUN apt-get update && \
-    apt-get -y upgrade && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq libpq-dev gcc python3.8 python3-pip && \
-    apt-get clean
+    apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /sample-app
+# Copy requirements first for better caching
+COPY requirements.txt requirements-server.txt ./
 
-COPY . /sample-app/
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r requirements-server.txt
 
-RUN pip3 install -r requirements.txt && \
-    pip3 install -r requirements-server.txt
+# Copy application code
+COPY . .
 
-ENV LC_ALL="C.UTF-8"
-ENV LANG="C.UTF-8"
+# Set environment variables
+ENV FLASK_APP=app
+ENV FLASK_ENV=production
+ENV PYTHONPATH=/app
 
-EXPOSE 8000/tcp
+# Expose port
+EXPOSE 8000
 
-CMD ["/bin/sh", "-c", "flask db upgrade && gunicorn app:app -b 0.0.0.0:8000"]
+# Run the application
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
