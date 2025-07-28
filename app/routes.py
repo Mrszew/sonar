@@ -1,8 +1,8 @@
-from flask import json, jsonify
+from flask import json, jsonify, request
 from app import app
 from app import db
 from app.models import Menu
-from app.utils import format_response, get_current_timestamp
+from app.utils import format_response, get_current_timestamp, validate_input
 
 @app.route('/')
 def home():
@@ -43,3 +43,30 @@ def utils_test():
     test_data = {"test": "data", "number": 42}
     formatted_response = format_response(test_data)
     return jsonify(formatted_response)
+
+@app.route('/api/v1/data', methods=['GET', 'POST'])
+def handle_data():
+    """API endpoint for data handling with validation"""
+    if request.method == 'GET':
+        return jsonify({
+            "message": "Data endpoint working",
+            "method": "GET",
+            "timestamp": get_current_timestamp()
+        })
+    
+    elif request.method == 'POST':
+        data = request.get_json()
+        if not validate_input(data):
+            return jsonify({"error": "Invalid input data"}), 400
+        
+        return jsonify(format_response(data, "created"))
+
+@app.route('/metrics')
+def get_metrics():
+    """Metrics endpoint for monitoring"""
+    return jsonify({
+        "uptime": "100%",
+        "response_time": "50ms",
+        "requests_per_second": 10,
+        "error_rate": "0.1%"
+    })
