@@ -26,3 +26,12 @@ def health_check():
         "version": "1.0.0",
         "service": "third-party-integration-demo"
     })
+
+@app.route('/test-integration')
+def test_integration():
+    """Test endpoint for SonarCloud integration"""
+    return jsonify({
+        "message": "SonarCloud integration test successful!",
+        "timestamp": "2024-01-15",
+        "branch": "feature/test-integration"
+    })
