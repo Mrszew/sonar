@@ -39,6 +39,7 @@ jobs:
       uses: SonarSource/sonarqube-scan-action@v5
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_CI_AUTOMATIC_ANALYSIS_DISABLED: "true"
 
   build-and-push:
     needs: test
