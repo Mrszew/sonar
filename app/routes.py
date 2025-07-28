@@ -2,6 +2,7 @@ from flask import json, jsonify
 from app import app
 from app import db
 from app.models import Menu
+from app.utils import format_response, get_current_timestamp
 
 @app.route('/')
 def home():
@@ -35,3 +36,10 @@ def test_integration():
         "timestamp": "2024-01-15",
         "branch": "feature/test-integration"
     })
+
+@app.route('/utils-test')
+def utils_test():
+    """Test endpoint for utils functions"""
+    test_data = {"test": "data", "number": 42}
+    formatted_response = format_response(test_data)
+    return jsonify(formatted_response)
