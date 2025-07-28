@@ -12,7 +12,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     
     steps:
     - name: Checkout code
@@ -36,14 +36,13 @@ jobs:
         python -m unittest discover
 
     - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
+      uses: SonarSource/sonarqube-scan-action@v5
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build-and-push:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -79,7 +78,7 @@ jobs:
 
   quality-gate:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     
     steps:
     - name: Checkout code
