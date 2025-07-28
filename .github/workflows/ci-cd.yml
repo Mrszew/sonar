@@ -12,7 +12,7 @@ env:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -42,7 +42,7 @@ jobs:
 
   build-and-push:
     needs: test
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -78,7 +78,7 @@ jobs:
 
   quality-gate:
     needs: test
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
